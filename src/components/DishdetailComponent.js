@@ -1,67 +1,78 @@
-import React, { Component } from 'react';
-import { Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle } from 'reactstrap';
+import React from 'react';
+import { Card, CardImg, CardText, CardBody, CardTitle, BreadcrumbItem, Breadcrumb } from 'reactstrap';
+import { Link } from 'react-router-dom';
 
-class DishdetailComponent extends Component {
-    constructor(props) {
-        super(props);
-        console.log('Constructor invocado.')
+function RenderComments({comments}){
+    let commentsArray = [];
+    
+    if(comments != null){
+        commentsArray = comments.map((comment) => {
+        return( 
+            <div className="col-12 col-md-5 m-1">
+                <h4>Comments</h4>
+            <li key={comment.id} >
+                {comment.description} <br/> 
+                --{comment.name}, {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(comment.date)))}
+            </li>
+            </div>
+        )});
     }
-
-    renderComments(comments){
-        let commentsArray = [];
-        
-        if(comments != null){
-            commentsArray = comments.map((comment) => {
-            return(
-                <li key={comment.id} >
-                  {comment.description} <br/> 
-                  --{comment.name}, {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(comment.date)))}
-               </li>
-            )});
-        }
-        else {
-            return(
-                <div></div>
-            );
-        }
-
+    else {
         return(
-            <ul className="list-unstyled">
-                {commentsArray}
-            </ul>
+            <div></div>
         );
     }
 
-    render(){
-        var dish = this.props.selectedDish;
+    return(
+        <ul className="list-unstyled">
+            {commentsArray}
+        </ul>
+    );
+}
 
-        if(dish != null){
-            return(
-                <div className="container">
-                    <div className="row">
-                    <div className="col-12 col-md-5 m-1">
-                    <Card >
-                        <CardImg  src={dish.image} alt={dish.name}/>
-                        <CardBody>
-                            <CardTitle>{dish.name}</CardTitle>
-                            <CardText>{dish.description}</CardText>
-                        </CardBody>    
-                    </Card>
-                    </div>
-                    <div className="col-12 col-md-5 m-1">
-                    <h4>Comments</h4>
-                      {this.renderComments(dish.comments)}
-                    </div>
-                    </div>
+function RenderDish({dish}){
+    return( 
+        <div className="col-12 col-md-5 m-1">
+            <Card >
+                <CardImg  src={dish.image} alt={dish.name}/>
+                <CardBody>
+                    <CardTitle>{dish.name}</CardTitle>
+                    <CardText>{dish.description}</CardText>
+                </CardBody>    
+            </Card>
+        </div>
+    );
+}
+
+const DishdetailComponent =  (props) => {
+    var dish = props.dish;
+
+    if(dish != null){
+        return(
+            <div className="container">
+                <div className="row">
+                 <Breadcrumb>
+                    <BreadcrumbItem><Link to='/menu'>Menu</Link></BreadcrumbItem>
+                    <BreadcrumbItem active>{props.dish.name}</BreadcrumbItem>
+                </Breadcrumb>
+                <div className="col-12">
+                    <h3>{props.dish.name}</h3>
+                    <hr/>
                 </div>
-               
-            );
-        }
-        else {
-            return(
-                <div></div>
-            );
-        }
+                </div>
+                <div className="row">
+                     <RenderDish dish={props.dish}/>     
+                     <RenderComments comments={props.comments}/>
+                </div>
+                
+            </div>
+            
+        );
+    }
+    else {
+        return(
+            <div></div>
+        );
     }
 }
 
