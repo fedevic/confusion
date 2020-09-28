@@ -1,21 +1,30 @@
 import React from 'react';
-import { Card, CardImg, CardText, CardBody, CardTitle, BreadcrumbItem, Breadcrumb } from 'reactstrap';
+import { Card, CardImg, CardText, CardBody, CardTitle, BreadcrumbItem, Breadcrumb, Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import  CommentForm from './CommentFormComponent';
 
 function RenderComments({comments}){
     let commentsArray = [];
     
     if(comments != null){
-        commentsArray = comments.map((comment) => {
+        commentsArray = comments.map((c) => { 
+            return(    
+                <li key={c.id} >
+                    {c.comment} <br/> 
+                    --{c.name}, {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(c.date)))}
+                </li>
+            );
+        });
+
         return( 
-            <div className="col-12 col-md-5 m-1">
-                <h4>Comments</h4>
-            <li key={comment.id} >
-                {comment.description} <br/> 
-                --{comment.name}, {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(comment.date)))}
-            </li>
-            </div>
-        )});
+        <div className="col-12 col-md-5 m-1">                
+            <ul className="list-unstyled">
+            <h4>Comments</h4>
+                {commentsArray}
+            </ul>            
+            <CommentForm/>
+        </div>
+        );
     }
     else {
         return(
@@ -23,11 +32,7 @@ function RenderComments({comments}){
         );
     }
 
-    return(
-        <ul className="list-unstyled">
-            {commentsArray}
-        </ul>
-    );
+    
 }
 
 function RenderDish({dish}){
